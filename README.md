@@ -14,8 +14,11 @@ How to use signals?
 A signal is a function that holds a value that can change over time. To create a signal, Angular offers a signal() function that you can import everywhere in your component :
 `
 //let first import signal from angular/core
+
 import { signal } from '@angular/core';
+
 // declare a signal
+
 num = signal(0);
 `
 The type of num is WritableSignal<number>, which is a function that returns a number.
@@ -23,6 +26,7 @@ The type of num is WritableSignal<number>, which is a function that returns a nu
 When you want to get the value of a signal, you have to call the created signal:
 `
 // consume the value of the signal, we do the same as on methods (while reading the method's returned value )
+
 value = num();
 
 Now, value will be equal to 0
@@ -30,6 +34,7 @@ Now, value will be equal to 0
 You can also set the value of a signal:
 
 // set the value of the signal
+
 num.set(1);
 `
 
@@ -38,17 +43,24 @@ num will be equal to 1 and value will be equal to 1 too, because of set function
 Also you can update it:
 `
 //setting the value of the signal
+
 count = signal(9)
+
 // update the value of the signal
+
 name.update((n)=>n+1) // after this, it will return 10
+
 `
 
 There is also a mutate method that can be used to mutate the value of a signal:
 `
 
 // mutate the value of the signal (handy for objects/arrays)
+
 countries = signal({name:'Burundi', slug:'bi', currency : 'BIF'})
+
 countries.mutate((country) => country.currency = 'FBU');
+
 `
 
 The difference between mutate and update is that with mutate the value changed only in the concerned feature but with update the value changed in the entire application ( everywhere we call the value )
@@ -64,6 +76,7 @@ double = computed(() => count() * 2);
 Computed values are automatically computed when one of the signals they depend on changes ( double changed everytime automatically when count changed ).
 `
 count.set(2);
+
 console.log(double()); // logs 4
 `
 Note that they are lazily computed and only re-computed when one of the signals they depend on produces a new value. They are not writable, so you can’t use .set() or .update() or .mutate() on them (their type is Signal<T>).
@@ -73,12 +86,15 @@ Under the hood, a signal has a set of subscribers, and when the value of the sig
 Finally, you can use the effect function to react to changes in your signals:
 `
 // log the value of the count signal when it changes
+
 effect(() => console.log(count()));
 
 An effect returns an object with a destroy method that can be used to stop the effect:
 
 effectRef: EffectRef = effect(() => console.log(count()));
+
 // stop executing the effect
+
 effectRef.destroy();
 `
 An effect or a computed value will re-evaluate when one of the signals they depend on changes, without any action from the developer. This is usually what you want, and me too 😃.
@@ -103,7 +119,9 @@ this.logEffect = effect(() => console.log(count()), { manualCleanup: true });
 In this case, you will have to manually stop the effect when the component is destroyed:
 `
 ngOnDestroy() {
+
   this.logEffect.destroy();
+  
 }
 `
 It’s anyway quite interesting how frameworks inspire each other, with Angular taking inspiration from Vue for the reactivity part, whereas other frameworks are increasingly adopting the template compilation approach of Angular, with no Virtual DOM needed at runtime.
